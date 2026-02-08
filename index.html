@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Awareness Demo</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            transition: background 0.5s ease;
+        }
+
+        /* Banking Login Page */
+        .banking-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 20px;
+        }
+
+        .bank-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .bank-logo {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .bank-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        /* University Login Page */
+        .university-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #D0D3D4;
+            padding: 20px;
+        }
+
+        .sso-card {
+            border-radius: 2px;
+            border-top: 6px solid #F76902;
+            width: 425px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.12), 0 2px 8px 0 rgba(0,0,0,0.24);
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .sso-logo {
+            width: 180px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .sso-branding {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sso-branding h5 {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sso-branding span {
+            display: block;
+            overflow-wrap: anywhere;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .row {
+            box-sizing: border-box;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex: 0 1 auto;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .flex-column {
+            flex-direction: column;
+        }
+
+        /* Instagram Login Page */
+        .instagram-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 20px;
+        }
+
+        .instagram-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+
+        .instagram-logo {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Common Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .icon-input {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .icon-input .icon {
+            font-size: 1.15rem;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            left: 1.25rem;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .icon-input input {
+            width: 100%;
+            padding-left: 2.25rem;
+            height: calc(1.5em + 1rem + 2px);
+            padding: 0.5rem 1rem 0.5rem 2.25rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 2px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        .icon-input input:focus {
+            color: black;
+            background-color: #fff;
+            border-color: black;
+            outline: 0;
+            box-shadow: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn--bank {
+            background: #1e3c72;
+        }
+
+        .btn--bank:hover {
+            background: #2a5298;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+        }
+
+        .btn--primary {
+            background: #F76902;
+            color: white;
+            border-color: #F76902;
+            font-weight: bold;
+            padding: 0.625rem 1.25rem;
+            font-size: 1.167rem;
+            border-width: 2px;
+        }
+
+        .btn--primary:hover {
+            background: black;
+            border-color: black;
+            color: white;
+        }
+
+        .btn--instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+        }
+
+        /* Red Warning Overlay */
+        .red-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(220, 20, 60, 0.95);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .red-overlay.warning1 {
+            background-image: url('shocked_sticker_7.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+        }
+
+        .red-overlay.warning2 {
+            background-image: url('shrug_sticker_3.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+        }
+
+        .red-overlay.warning3 {
+            background-image: url('shocked_sticker_13.avif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .warning-message {
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 4px 4px 15px rgba(0,0,0,0.6);
+            margin-bottom: 30px;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .warning-content {
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.8;
+            padding: 0 30px;
+        }
+
+        /* Final Summary Page */
+        .summary-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            z-index: 2000;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .summary-title {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: bold;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .summary-points {
+            max-width: 900px;
+            width: 100%;
+            font-size: clamp(16px, 2.5vw, 20px);
+            line-height: 1.6;
+            text-align: left;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .summary-points li {
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-in forwards;
+        }
+
+        .summary-points li:nth-child(1) { animation-delay: 0.5s; }
+        .summary-points li:nth-child(2) { animation-delay: 0.7s; }
+        .summary-points li:nth-child(3) { animation-delay: 0.9s; }
+        .summary-points li:nth-child(4) { animation-delay: 1.1s; }
+        .summary-points li:nth-child(5) { animation-delay: 1.3s; }
+        .summary-points li:nth-child(6) { animation-delay: 1.5s; }
+        .summary-points li:nth-child(7) { animation-delay: 1.7s; }
+        .summary-points li:nth-child(8) { animation-delay: 1.9s; }
+        .summary-points li:nth-child(9) { animation-delay: 2.1s; }
+        .summary-points li:nth-child(10) { animation-delay: 2.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typing effect */
+        .typing {
+            border-right: 2px solid #667eea;
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: #667eea; }
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function PhishingDemo() {
+            const [stage, setStage] = useState('banking'); // banking, warning1, university, warning2, instagram, warning3, summary
+            const [bankingUsername, setBankingUsername] = useState('');
+            const [bankingPassword, setBankingPassword] = useState('');
+            const [universityUsername, setUniversityUsername] = useState('');
+            const [universityPassword, setUniversityPassword] = useState('');
+            const [instagramUsername, setInstagramUsername] = useState('');
+            const [instagramPassword, setInstagramPassword] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+
+            // Type text animation
+            const typeText = (text, setter, callback) => {
+                setIsTyping(true);
+                let index = 0;
+                const interval = setInterval(() => {
+                    if (index < text.length) {
+                        setter(text.substring(0, index + 1));
+                        index++;
+                    } else {
+                        clearInterval(interval);
+                        setIsTyping(false);
+                        if (callback) callback();
+                    }
+                }, 80);
+            };
+
+            // Stage 1: Banking login
+            useEffect(() => {
+                if (stage === 'banking') {
+                    setTimeout(() => {
+                        typeText('john.doe@email.com', setBankingUsername, () => {
+                            setTimeout(() => {
+                                typeText('••••••••••', setBankingPassword, () => {
+                                    setTimeout(() => {
+                                        setStage('warning1');
+                                    }, 1000);
+                                });
+                            }, 500);
+                        });
+                    }, 1000);
+                }
+            }, [stage]);
+
+            // Stage 2: Warning 1 -> University
+            useEffect(() => {
+                if (stage === 'warning1') {
+                    const timer = setTimeout(() => {
+                        setStage('university');
+                    }, 7000); // 7 seconds for reading
+                    return () => clearTimeout(timer);
+                }
+            }, [stage]);
+
+            // Stage 3: University login
+            useEffect(() => {
+                if (stage === 'university') {
+                    setTimeout(() => {
+                        typeText('xyz1234', setUniversityUsername, () => {
+                            setTimeout(() => {
+                                typeText('••••••••••', setUniversityPassword, () => {
+                                    setTimeout(() => {
+                                        setStage('warning2');
+                                    }, 1000);
+                                });
+                            }, 500);
+                        });
+                    }, 1000);
+                }
+            }, [stage]);
+
+            // Stage 4: Warning 2 -> Instagram
+            useEffect(() => {
+                if (stage === 'warning2') {
+                    const timer = setTimeout(() => {
+                        setStage('instagram');
+                    }, 7000); // 7 seconds for reading
+                    return () => clearTimeout(timer);
+                }
+            }, [stage]);
+
+            // Stage 5: Instagram login
+            useEffect(() => {
+                if (stage === 'instagram') {
+                    setTimeout(() => {
+                        typeText('johndoe_insta', setInstagramUsername, () => {
+                            setTimeout(() => {
+                                typeText('••••••••••', setInstagramPassword, () => {
+                                    setTimeout(() => {
+                                        setStage('warning3');
+                                    }, 1000);
+                                });
+                            }, 500);
+                        });
+                    }, 1000);
+                }
+            }, [stage]);
+
+            // Stage 6: Warning 3 -> Summary
+            useEffect(() => {
+                if (stage === 'warning3') {
+                    const timer = setTimeout(() => {
+                        setStage('summary');
+                    }, 7000); // 7 seconds for reading
+                    return () => clearTimeout(timer);
+                }
+            }, [stage]);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+            };
+
+            // Render based on stage
+            if (stage === 'warning1') {
+                return (
+                    <div className="red-overlay warning1">
+                        <div className="warning-message">⚠️YOU JUST GOT PHISHED⚠️</div>
+                        <div className="warning-content">
+                            <p><strong>Phishing sites can have HTTPS too!</strong></p>
+                            <p>Many people think that a padlock icon or "HTTPS" in the URL means a site is safe. This is not true!</p>
+                            
+                        </div>
+                    </div>
+                );
+            }
+
+            if (stage === 'warning2') {
+                return (
+                    <div className="red-overlay warning2">
+                        <div className="warning-message">YOU JUST GOT PHISHED AGAIN???!</div>
+                        <div className="warning-content">
+                            <p><strong>This is what phishing looks like!</strong></p>
+                            <p>Phishing websites can be incredibly accurate and convincing. They often copy the exact design, logos, and layout of legitimate websites.</p>
+                            
+                        </div>
+                    </div>
+                );
+            }
+
+            if (stage === 'warning3') {
+                return (
+                    <div className="red-overlay warning3">
+                        <div className="warning-message">UGH NOT AGAIN???!</div>
+                        <div className="warning-content">
+                            <p><strong>Anyone can create targeted phishing pages!</strong></p>
+                            <p>With a little determination and skill, attackers can create convincing phishing websites specifically designed to target you.</p>
+                        
+                        </div>
+                    </div>
+                );
+            }
+
+            if (stage === 'summary') {
+                return (
+                    <div className="summary-page">
+                        <h1 className="summary-title">THINGS YOU SHOULD LOOK OUT FOR</h1>
+                        <ul className="summary-points">
+                            <li>✓ Phishing websites can be incredibly accurate and convincing, copying exact designs and layouts</li>
+                            <li>✓ HTTPS and padlock icons don't guarantee safety - attackers can get SSL certificates for fake sites</li>
+                            <li>✓ Anyone with determination and skill can create targeted phishing pages designed to trick you</li>
+                            <li>✓ Always check the actual domain name carefully - look for typos, extra characters, or suspicious domains</li>
+                            <li>✓ Be wary of urgent or threatening messages that pressure you to act quickly</li>
+                            <li>✓ Never enter credentials on pages you didn't navigate to directly from the official website</li>
+                            <li>✓ Use two-factor authentication (2FA) whenever available to add an extra layer of security</li>
+                            <li>✓ Verify suspicious links by hovering over them to see the actual destination URL</li>
+                            <li>✓ If something seems too good to be true (like "get A* on everything"), it probably is</li>
+                            <li>✓ When in doubt, contact the organization directly through their official channels</li>
+                        </ul>
+                        <div style={{ marginTop: '30px', marginBottom: '30px', fontSize: 'clamp(14px, 2vw, 18px)', textAlign: 'center', opacity: 0, animation: 'fadeIn 1s ease-in 3.5s forwards', padding: '0 20px', maxWidth: '900px' }}>
+                            <p><strong>Stay Safe:</strong> Always verify URLs, check for typos in domain names, and use two-factor authentication when available.</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (stage === 'banking') {
+                return (
+                    <div className="banking-login">
+                        <div className="bank-card">
+                            <div className="bank-logo">Very Secure Bank</div>
+                            <h2>Sign In to Your Account to get Gazillion Dollars!</h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-group">
+                                    <label htmlFor="bank-username">Email Address</label>
+                                    <input
+                                        type="text"
+                                        id="bank-username"
+                                        value={bankingUsername}
+                                        placeholder="Enter your email"
+                                        readOnly
+                                        className={isTyping ? 'typing' : ''}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="bank-password">Password</label>
+                                    <input
+                                        type="password"
+                                        id="bank-password"
+                                        value={bankingPassword}
+                                        placeholder="Enter your password"
+                                        readOnly
+                                        className={isTyping ? 'typing' : ''}
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn--bank">Sign In</button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (stage === 'university') {
+                return (
+                    <div className="university-login">
+                        <div className="sso-card">
+                            <div className="sso-branding">
+                                <h5>RIT Login</h5>
+                                <span>Sign in to instantly get A* on everything</span>
+                            </div>
+                            <form onSubmit={handleSubmit} action="/idp/profile/SAML2/Redirect/SSO?execution=e1s1" method="post">
+                                <div className="icon-input">
+                                    <i className="fa fa-user icon"></i>
+                                    <input
+                                        id="ritUsername"
+                                        name="j_username"
+                                        title="RIT Account Username"
+                                        placeholder="RIT Username, ex: xyz1234"
+                                        value={universityUsername}
+                                        readOnly
+                                        className={isTyping ? 'typing' : ''}
+                                    />
+                                </div>
+                                <div className="icon-input mt-2">
+                                    <i className="fa fa-lock icon"></i>
+                                    <input
+                                        type="password"
+                                        id="ritPassword"
+                                        name="j_password"
+                                        title="RIT Account Password"
+                                        placeholder="Password"
+                                        value={universityPassword}
+                                        readOnly
+                                        className={isTyping ? 'typing' : ''}
+                                    />
+                                </div>
+                                <div className="row mt-3">
+                                    <button style={{ width: '100%' }} className="btn btn--primary" type="submit">Log In</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (stage === 'instagram') {
+                return (
+                    <div className="instagram-login">
+                        <div className="instagram-card">
+                            <div className="instagram-logo">Instagram</div>
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-group">
+                                    <input
+                                        type="text"
+                                        placeholder="Phone number, username, or email"
+                                        value={instagramUsername}
+                                        readOnly
+                                        className={isTyping ? 'typing' : ''}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <input
+                                        type="password"
+                                        placeholder="Password"
+                                        value={instagramPassword}
+                                        readOnly
+                                        className={isTyping ? 'typing' : ''}
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn--instagram">Log In</button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        }
+
+        ReactDOM.render(<PhishingDemo />, document.getElementById('root'));
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</body>
+</html>
