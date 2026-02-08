@@ -413,6 +413,30 @@
         .hide {
             display: none;
         }
+
+        .restart-btn {
+            margin-top: 40px;
+            padding: 14px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            opacity: 0;
+            animation: fadeIn 1s ease-in 3.5s forwards;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .restart-btn:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
@@ -469,7 +493,7 @@
                 if (stage === 'warning1') {
                     const timer = setTimeout(() => {
                         setStage('university');
-                    }, 5000); // 7 seconds for reading
+                    }, 6000); // 7 seconds for reading
                     return () => clearTimeout(timer);
                 }
             }, [stage]);
@@ -496,7 +520,7 @@
                 if (stage === 'warning2') {
                     const timer = setTimeout(() => {
                         setStage('instagram');
-                    }, 5000); // 7 seconds for reading
+                    }, 6000); // 7 seconds for reading
                     return () => clearTimeout(timer);
                 }
             }, [stage]);
@@ -523,13 +547,24 @@
                 if (stage === 'warning3') {
                     const timer = setTimeout(() => {
                         setStage('summary');
-                    }, 5000); // 7 seconds for reading
+                    }, 6000); // 7 seconds for reading
                     return () => clearTimeout(timer);
                 }
             }, [stage]);
 
             const handleSubmit = (e) => {
                 e.preventDefault();
+            };
+
+            const handleRestart = () => {
+                // Reset all state variables
+                setBankingUsername('');
+                setBankingPassword('');
+                setUniversityUsername('');
+                setUniversityPassword('');
+                setInstagramUsername('');
+                setInstagramPassword('');
+                setStage('banking');
             };
 
             // Render based on stage
@@ -591,6 +626,7 @@
                         <div style={{ marginTop: '30px', marginBottom: '30px', fontSize: 'clamp(14px, 2vw, 18px)', textAlign: 'center', opacity: 0, animation: 'fadeIn 1s ease-in 3.5s forwards', padding: '0 20px', maxWidth: '900px' }}>
                             <p><strong>Stay Safe:</strong> Always verify URLs, check for typos in domain names, and use two-factor authentication when available.</p>
                         </div>
+                        <button className="restart-btn" onClick={handleRestart}>Restart Demo</button>
                     </div>
                 );
             }
